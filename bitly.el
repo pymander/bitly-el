@@ -53,22 +53,23 @@ Get your personal token here: https://bitly.com/a/oauth_apps"
 
 (defun bitly-shorten (long-url)
   "Return a shortened URL for LONG-URL."
-  (let* ((url (format "%s/v3/shorten?access_token=%s&longUrl=%s"
-                      bitly-base-url
-                      (url-hexify-string bitly-access-token)
-                      (url-hexify-string long-url)))
-         (json-buffer (url-retrieve-synchronously url))
-         (response (with-current-buffer json-buffer
+  (let* ((url-request-extra-headers (pairlis '("Content-Type" "Authorization")
+                                             (list "application/json"
+                                                   (concat "Bearer " (url-hexify-string bitly-access-token)))))
+         (url-request-method "POST")
+         (url-request-data (json-encode-list
+                            (pairlis '("domain" "long_url")
+                                     (list "bit.ly" long-url))))
+         (url (format "%s/v4/shorten" bitly-base-url))
+         json-buffer response)
+    (setq json-buffer (url-retrieve-synchronously url)
+          response (with-current-buffer json-buffer
                      (goto-char (point-min))
                      (search-forward "\n\n" nil t)
                      (json-read)))
-         (status-code (cdr (assq 'status_code response))))
-    (if (equal status-code 200)
-        (cdr (assq 'url
-                   (cdr (assq 'data response))))
-      (error "Error %s calling bitly: %s"
-             status-code
-             (cdr (assq 'status_txt response))))))
+    (if (assq 'link response)
+        (cdr (assq 'link response))
+      (error "Error calling bitly: %s" (cdr (assq 'description response))))))
 
 ;;;###autoload
 (defun bitly-url-at-point ()
