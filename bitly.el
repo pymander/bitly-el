@@ -3,9 +3,9 @@
 ;; Copyright (C) 2013  Jorgen Schaefer <forcer@forcix.cx>
 
 ;; Version: 2.0
-;; Package-Version: 20151125.848
-;; Author: Jorgen Schaefer <forcer@forcix.cx>, Erik L. Arneson <earneson@arnesonium.com>
-;; URL: https://github.com/jorgenschaefer/bitly-el
+;; Author: Jorgen Schaefer <forcer@forcix.cx>
+;; Maintainer: Erik L. Arneson <earneson@arnesonium.com>
+;; URL: https://github.com/pymander/bitly-el
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License
@@ -29,17 +29,17 @@
 ;; with a shortened version.
 
 ;; To use, go to https://bitly.com/a/oauth_apps to generate your personal
-;; API access token. Then customize `bitly-access-token' and set it to
+;; API access token.  Then customize `bitly-access-token' and set it to
 ;; the token you just got.
 
 ;;; Code:
 
-(require 'cl)
+(require 'cl-lib)
 (require 'thingatpt)
 (require 'json)
 
 (defgroup bitly nil
-  "The bitly URL shortening service."
+  "The Bitly URL shortening service."
   :prefix "bitly-"
   :group 'applications)
 
@@ -54,12 +54,12 @@ Get your personal token here: https://bitly.com/a/oauth_apps"
 
 (defun bitly-shorten (long-url)
   "Return a shortened URL for LONG-URL."
-  (let* ((url-request-extra-headers (pairlis '("Content-Type" "Authorization")
+  (let* ((url-request-extra-headers (cl-pairlis '("Content-Type" "Authorization")
                                              (list "application/json"
                                                    (concat "Bearer " (url-hexify-string bitly-access-token)))))
          (url-request-method "POST")
          (url-request-data (json-encode-list
-                            (pairlis '("domain" "long_url")
+                            (cl-pairlis '("domain" "long_url")
                                      (list "bit.ly" long-url))))
          (url (format "%s/v4/shorten" bitly-base-url))
          json-buffer response)

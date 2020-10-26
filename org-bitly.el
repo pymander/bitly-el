@@ -5,6 +5,7 @@
 ;; Version: 1.0
 ;; Author: Erik L. Arneson <earneson@arnesonium.com>
 ;; URL: https://github.com/pymander/bitly-el
+;; Package-Requires: '((emacs "27.1"))
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License
@@ -21,14 +22,14 @@
 
 ;;; Commentary:
 
-;; Integrate Bitly into Org Export. This shortens URLs that are marked
+;; Integrate Bitly into Org Export.  This shortens URLs that are marked
 ;; with "bitly:" and optionally adds UTM parameters for later
 ;; analytics.
 
 ;;; Code:
 
 (eval-when-compile
-  (require 'cl))
+  (require 'cl-lib))
 (require 'org-element)
 (require 'bitly)
 
@@ -36,7 +37,9 @@
   "If T, create Urchin Tracking Module (UTM) parameters for URLs before shortening them with Bitly.")
 
 (defun org-bitly-build-utm (&optional pos medium)
-  "Build Urchin Tracking Module (UTM) parameters for the Org structure at POS."
+  "Build Urchin Tracking Module (UTM) parameters for the Org structure at POS.
+
+MEDIUM Is the type of link, such as cost-per-click or email."
   (interactive "di")
   (unless pos
     (setq pos (point)))
@@ -59,7 +62,7 @@
   (browse-url path))
 
 (defun org-bitly-link-export (path desc format)
-  "Function used to use Bitly to shorten URLs on export
+  "Use Bitly to shorten URLs on exporting from `org-mode'.
 
 PATH is the path of the link, the text after the prefix (like \"http:\")
 DESC is the description of the link, if any
@@ -95,4 +98,5 @@ Currently this supports only HTML, Markdown, ODT, and LaTeX."
   (org-bitly-define-links))
 
 (provide 'org-bitly)
-;;; End.
+
+;;; org-bitly.el ends here
