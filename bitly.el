@@ -2,9 +2,9 @@
 
 ;; Copyright (C) 2013  Jorgen Schaefer <forcer@forcix.cx>
 
-;; Version: 1.0
+;; Version: 2.0
 ;; Package-Version: 20151125.848
-;; Author: Jorgen Schaefer <forcer@forcix.cx>
+;; Author: Jorgen Schaefer <forcer@forcix.cx>, Erik L. Arneson <earneson@arnesonium.com>
 ;; URL: https://github.com/jorgenschaefer/bitly-el
 
 ;; This program is free software; you can redistribute it and/or
@@ -34,6 +34,7 @@
 
 ;;; Code:
 
+(require 'cl)
 (require 'thingatpt)
 (require 'json)
 
